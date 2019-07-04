@@ -21,6 +21,49 @@ const (
 	AuditLogOrderFieldCreatedAt AuditLogOrderField = "CREATED_AT" // Order audit log entries by timestamp.
 )
 
+// CheckAnnotationLevel represents represents an annotation's information level.
+type CheckAnnotationLevel string
+
+// Represents an annotation's information level.
+const (
+	CheckAnnotationLevelFailure CheckAnnotationLevel = "FAILURE" // An annotation indicating an inescapable error.
+	CheckAnnotationLevelNotice  CheckAnnotationLevel = "NOTICE"  // An annotation indicating some information.
+	CheckAnnotationLevelWarning CheckAnnotationLevel = "WARNING" // An annotation indicating an ignorable error.
+)
+
+// CheckConclusionState represents the possible states for a check suite or run conclusion.
+type CheckConclusionState string
+
+// The possible states for a check suite or run conclusion.
+const (
+	CheckConclusionStateActionRequired CheckConclusionState = "ACTION_REQUIRED" // The check suite or run requires action.
+	CheckConclusionStateTimedOut       CheckConclusionState = "TIMED_OUT"       // The check suite or run has timed out.
+	CheckConclusionStateCancelled      CheckConclusionState = "CANCELLED"       // The check suite or run has been cancelled.
+	CheckConclusionStateFailure        CheckConclusionState = "FAILURE"         // The check suite or run has failed.
+	CheckConclusionStateSuccess        CheckConclusionState = "SUCCESS"         // The check suite or run has succeeded.
+	CheckConclusionStateNeutral        CheckConclusionState = "NEUTRAL"         // The check suite or run was neutral.
+)
+
+// CheckRunType represents the possible types of check runs.
+type CheckRunType string
+
+// The possible types of check runs.
+const (
+	CheckRunTypeAll    CheckRunType = "ALL"    // Every check run available.
+	CheckRunTypeLatest CheckRunType = "LATEST" // The latest check run.
+)
+
+// CheckStatusState represents the possible states for a check suite or run status.
+type CheckStatusState string
+
+// The possible states for a check suite or run status.
+const (
+	CheckStatusStateQueued     CheckStatusState = "QUEUED"      // The check suite or run has been queued.
+	CheckStatusStateInProgress CheckStatusState = "IN_PROGRESS" // The check suite or run is in progress.
+	CheckStatusStateCompleted  CheckStatusState = "COMPLETED"   // The check suite or run has been completed.
+	CheckStatusStateRequested  CheckStatusState = "REQUESTED"   // The check suite or run has been requested.
+)
+
 // CollaboratorAffiliation represents collaborators affiliation level with a subject.
 type CollaboratorAffiliation string
 
@@ -448,6 +491,21 @@ const (
 	LockReasonSpam      LockReason = "SPAM"       // The issue or pull request was locked because the conversation was spam.
 )
 
+// MergeStateStatus represents detailed status information about a pull request merge.
+type MergeStateStatus string
+
+// Detailed status information about a pull request merge.
+const (
+	MergeStateStatusDirty    MergeStateStatus = "DIRTY"     // The merge commit cannot be cleanly created.
+	MergeStateStatusUnknown  MergeStateStatus = "UNKNOWN"   // The state cannot currently be determined.
+	MergeStateStatusBlocked  MergeStateStatus = "BLOCKED"   // The merge is blocked.
+	MergeStateStatusBehind   MergeStateStatus = "BEHIND"    // The head ref is out of date.
+	MergeStateStatusDraft    MergeStateStatus = "DRAFT"     // The merge is blocked due to the pull request being a draft.
+	MergeStateStatusUnstable MergeStateStatus = "UNSTABLE"  // Mergeable with non-passing commit status.
+	MergeStateStatusHasHooks MergeStateStatus = "HAS_HOOKS" // Mergeable with passing commit status and pre-recieve hooks.
+	MergeStateStatusClean    MergeStateStatus = "CLEAN"     // Mergeable and passing commit status.
+)
+
 // MergeableState represents whether or not a PullRequest can be merged.
 type MergeableState string
 
@@ -500,6 +558,16 @@ const (
 	OperationTypeRemove         OperationType = "REMOVE"         // An existing resource was removed.
 	OperationTypeRestore        OperationType = "RESTORE"        // An existing resource was restored.
 	OperationTypeTransfer       OperationType = "TRANSFER"       // An existing resource was transferred between multiple resources.
+)
+
+// OauthApplicationRevokeTokensAuditEntryState represents the state of an OAuth Application when its tokens were revoked.
+type OauthApplicationRevokeTokensAuditEntryState string
+
+// The state of an OAuth Application when its tokens were revoked.
+const (
+	OauthApplicationRevokeTokensAuditEntryStateActive          OauthApplicationRevokeTokensAuditEntryState = "ACTIVE"           // The OAuth Application was active and allowed to have OAuth Accesses.
+	OauthApplicationRevokeTokensAuditEntryStateSuspended       OauthApplicationRevokeTokensAuditEntryState = "SUSPENDED"        // The OAuth Application was suspended from generating OAuth Accesses due to abuse or security concerns.
+	OauthApplicationRevokeTokensAuditEntryStatePendingDeletion OauthApplicationRevokeTokensAuditEntryState = "PENDING_DELETION" // The OAuth Application was in the process of being deleted.
 )
 
 // OrderDirection represents possible directions in which to order a list of items when provided an `orderBy` argument.
@@ -1132,6 +1200,16 @@ type SavedReplyOrderField string
 // Properties by which saved reply connections can be ordered.
 const (
 	SavedReplyOrderFieldUpdatedAt SavedReplyOrderField = "UPDATED_AT" // Order saved reply by when they were updated.
+)
+
+// RequestableCheckStatusState represents the possible states that can be requested when creating a check run.
+type RequestableCheckStatusState string
+
+// The possible states that can be requested when creating a check run.
+const (
+	RequestableCheckStatusStateQueued     RequestableCheckStatusState = "QUEUED"      // The check suite or run has been queued.
+	RequestableCheckStatusStateInProgress RequestableCheckStatusState = "IN_PROGRESS" // The check suite or run is in progress.
+	RequestableCheckStatusStateCompleted  RequestableCheckStatusState = "COMPLETED"   // The check suite or run has been completed.
 )
 
 // SearchType represents represents the individual results of a search.

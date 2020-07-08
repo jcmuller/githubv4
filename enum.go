@@ -42,6 +42,8 @@ const (
 	CheckConclusionStateFailure        CheckConclusionState = "FAILURE"         // The check suite or run has failed.
 	CheckConclusionStateSuccess        CheckConclusionState = "SUCCESS"         // The check suite or run has succeeded.
 	CheckConclusionStateNeutral        CheckConclusionState = "NEUTRAL"         // The check suite or run was neutral.
+	CheckConclusionStateSkipped        CheckConclusionState = "SKIPPED"         // The check suite or run was skipped.
+	CheckConclusionStateStale          CheckConclusionState = "STALE"           // The check suite or run was marked stale by GitHub. Only GitHub can use this conclusion.
 )
 
 // CheckRunType represents the possible types of check runs.
@@ -109,14 +111,6 @@ type CommitContributionOrderField string
 const (
 	CommitContributionOrderFieldOccurredAt  CommitContributionOrderField = "OCCURRED_AT"  // Order commit contributions by when they were made.
 	CommitContributionOrderFieldCommitCount CommitContributionOrderField = "COMMIT_COUNT" // Order commit contributions by how many commits they represent.
-)
-
-// ContributionOrderField represents properties by which contribution connections can be ordered.
-type ContributionOrderField string
-
-// Properties by which contribution connections can be ordered.
-const (
-	ContributionOrderFieldOccurredAt ContributionOrderField = "OCCURRED_AT" // Order contributions by when they were made.
 )
 
 // DefaultRepositoryPermissionField represents the possible default permissions for repositories.
@@ -502,7 +496,7 @@ const (
 	MergeStateStatusBehind   MergeStateStatus = "BEHIND"    // The head ref is out of date.
 	MergeStateStatusDraft    MergeStateStatus = "DRAFT"     // The merge is blocked due to the pull request being a draft.
 	MergeStateStatusUnstable MergeStateStatus = "UNSTABLE"  // Mergeable with non-passing commit status.
-	MergeStateStatusHasHooks MergeStateStatus = "HAS_HOOKS" // Mergeable with passing commit status and pre-recieve hooks.
+	MergeStateStatusHasHooks MergeStateStatus = "HAS_HOOKS" // Mergeable with passing commit status and pre-receive hooks.
 	MergeStateStatusClean    MergeStateStatus = "CLEAN"     // Mergeable and passing commit status.
 )
 
@@ -558,16 +552,6 @@ const (
 	OperationTypeRemove         OperationType = "REMOVE"         // An existing resource was removed.
 	OperationTypeRestore        OperationType = "RESTORE"        // An existing resource was restored.
 	OperationTypeTransfer       OperationType = "TRANSFER"       // An existing resource was transferred between multiple resources.
-)
-
-// OauthApplicationRevokeTokensAuditEntryState represents the state of an OAuth Application when its tokens were revoked.
-type OauthApplicationRevokeTokensAuditEntryState string
-
-// The state of an OAuth Application when its tokens were revoked.
-const (
-	OauthApplicationRevokeTokensAuditEntryStateActive          OauthApplicationRevokeTokensAuditEntryState = "ACTIVE"           // The OAuth Application was active and allowed to have OAuth Accesses.
-	OauthApplicationRevokeTokensAuditEntryStateSuspended       OauthApplicationRevokeTokensAuditEntryState = "SUSPENDED"        // The OAuth Application was suspended from generating OAuth Accesses due to abuse or security concerns.
-	OauthApplicationRevokeTokensAuditEntryStatePendingDeletion OauthApplicationRevokeTokensAuditEntryState = "PENDING_DELETION" // The OAuth Application was in the process of being deleted.
 )
 
 // OrderDirection represents possible directions in which to order a list of items when provided an `orderBy` argument.
@@ -630,6 +614,8 @@ const (
 	OrgRemoveMemberAuditEntryReasonTwoFactorRequirementNonCompliance          OrgRemoveMemberAuditEntryReason = "TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE"           // The organization required 2FA of its billing managers and this user did not have 2FA enabled.
 	OrgRemoveMemberAuditEntryReasonSamlExternalIdentityMissing                OrgRemoveMemberAuditEntryReason = "SAML_EXTERNAL_IDENTITY_MISSING"                  // SAML external identity missing.
 	OrgRemoveMemberAuditEntryReasonSamlSsoEnforcementRequiresExternalIdentity OrgRemoveMemberAuditEntryReason = "SAML_SSO_ENFORCEMENT_REQUIRES_EXTERNAL_IDENTITY" // SAML SSO enforcement requires an external identity.
+	OrgRemoveMemberAuditEntryReasonUserAccountDeleted                         OrgRemoveMemberAuditEntryReason = "USER_ACCOUNT_DELETED"                            // User account has been deleted.
+	OrgRemoveMemberAuditEntryReasonTwoFactorAccountRecovery                   OrgRemoveMemberAuditEntryReason = "TWO_FACTOR_ACCOUNT_RECOVERY"                     // User was removed from organization during account recovery.
 )
 
 // OrgRemoveOutsideCollaboratorAuditEntryMembershipType represents the type of membership a user has with an Organization.
@@ -726,6 +712,44 @@ type OrganizationOrderField string
 const (
 	OrganizationOrderFieldCreatedAt OrganizationOrderField = "CREATED_AT" // Order organizations by creation time.
 	OrganizationOrderFieldLogin     OrganizationOrderField = "LOGIN"      // Order organizations by login.
+)
+
+// PackageFileOrderField represents properties by which package file connections can be ordered.
+type PackageFileOrderField string
+
+// Properties by which package file connections can be ordered.
+const (
+	PackageFileOrderFieldCreatedAt PackageFileOrderField = "CREATED_AT" // Order package files by creation time.
+)
+
+// PackageOrderField represents properties by which package connections can be ordered.
+type PackageOrderField string
+
+// Properties by which package connections can be ordered.
+const (
+	PackageOrderFieldCreatedAt PackageOrderField = "CREATED_AT" // Order packages by creation time.
+)
+
+// PackageType represents the possible types of a package.
+type PackageType string
+
+// The possible types of a package.
+const (
+	PackageTypeNpm      PackageType = "NPM"      // An npm package.
+	PackageTypeRubygems PackageType = "RUBYGEMS" // A rubygems package.
+	PackageTypeMaven    PackageType = "MAVEN"    // A maven package.
+	PackageTypeDocker   PackageType = "DOCKER"   // A docker image.
+	PackageTypeDebian   PackageType = "DEBIAN"   // A debian package.
+	PackageTypeNuget    PackageType = "NUGET"    // A nuget package.
+	PackageTypePypi     PackageType = "PYPI"     // A python package.
+)
+
+// PackageVersionOrderField represents properties by which package version connections can be ordered.
+type PackageVersionOrderField string
+
+// Properties by which package version connections can be ordered.
+const (
+	PackageVersionOrderFieldCreatedAt PackageVersionOrderField = "CREATED_AT" // Order package versions by creation time.
 )
 
 // PinnableItemType represents represents items that can be pinned to a profile page or dashboard.
@@ -878,53 +902,56 @@ type PullRequestTimelineItemsItemType string
 
 // The possible item types found in a timeline.
 const (
-	PullRequestTimelineItemsItemTypePullRequestCommit                 PullRequestTimelineItemsItemType = "PULL_REQUEST_COMMIT"                  // Represents a Git commit part of a pull request.
-	PullRequestTimelineItemsItemTypePullRequestCommitCommentThread    PullRequestTimelineItemsItemType = "PULL_REQUEST_COMMIT_COMMENT_THREAD"   // Represents a commit comment thread part of a pull request.
-	PullRequestTimelineItemsItemTypePullRequestReview                 PullRequestTimelineItemsItemType = "PULL_REQUEST_REVIEW"                  // A review object for a given pull request.
-	PullRequestTimelineItemsItemTypePullRequestReviewThread           PullRequestTimelineItemsItemType = "PULL_REQUEST_REVIEW_THREAD"           // A threaded list of comments for a given pull request.
-	PullRequestTimelineItemsItemTypePullRequestRevisionMarker         PullRequestTimelineItemsItemType = "PULL_REQUEST_REVISION_MARKER"         // Represents the latest point in the pull request timeline for which the viewer has seen the pull request's commits.
-	PullRequestTimelineItemsItemTypeBaseRefChangedEvent               PullRequestTimelineItemsItemType = "BASE_REF_CHANGED_EVENT"               // Represents a 'base_ref_changed' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeBaseRefForcePushedEvent           PullRequestTimelineItemsItemType = "BASE_REF_FORCE_PUSHED_EVENT"          // Represents a 'base_ref_force_pushed' event on a given pull request.
-	PullRequestTimelineItemsItemTypeDeployedEvent                     PullRequestTimelineItemsItemType = "DEPLOYED_EVENT"                       // Represents a 'deployed' event on a given pull request.
-	PullRequestTimelineItemsItemTypeDeploymentEnvironmentChangedEvent PullRequestTimelineItemsItemType = "DEPLOYMENT_ENVIRONMENT_CHANGED_EVENT" // Represents a 'deployment_environment_changed' event on a given pull request.
-	PullRequestTimelineItemsItemTypeHeadRefDeletedEvent               PullRequestTimelineItemsItemType = "HEAD_REF_DELETED_EVENT"               // Represents a 'head_ref_deleted' event on a given pull request.
-	PullRequestTimelineItemsItemTypeHeadRefForcePushedEvent           PullRequestTimelineItemsItemType = "HEAD_REF_FORCE_PUSHED_EVENT"          // Represents a 'head_ref_force_pushed' event on a given pull request.
-	PullRequestTimelineItemsItemTypeHeadRefRestoredEvent              PullRequestTimelineItemsItemType = "HEAD_REF_RESTORED_EVENT"              // Represents a 'head_ref_restored' event on a given pull request.
-	PullRequestTimelineItemsItemTypeMergedEvent                       PullRequestTimelineItemsItemType = "MERGED_EVENT"                         // Represents a 'merged' event on a given pull request.
-	PullRequestTimelineItemsItemTypeReviewDismissedEvent              PullRequestTimelineItemsItemType = "REVIEW_DISMISSED_EVENT"               // Represents a 'review_dismissed' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeReviewRequestedEvent              PullRequestTimelineItemsItemType = "REVIEW_REQUESTED_EVENT"               // Represents an 'review_requested' event on a given pull request.
-	PullRequestTimelineItemsItemTypeReviewRequestRemovedEvent         PullRequestTimelineItemsItemType = "REVIEW_REQUEST_REMOVED_EVENT"         // Represents an 'review_request_removed' event on a given pull request.
-	PullRequestTimelineItemsItemTypeReadyForReviewEvent               PullRequestTimelineItemsItemType = "READY_FOR_REVIEW_EVENT"               // Represents a 'ready_for_review' event on a given pull request.
-	PullRequestTimelineItemsItemTypeIssueComment                      PullRequestTimelineItemsItemType = "ISSUE_COMMENT"                        // Represents a comment on an Issue.
-	PullRequestTimelineItemsItemTypeCrossReferencedEvent              PullRequestTimelineItemsItemType = "CROSS_REFERENCED_EVENT"               // Represents a mention made by one issue or pull request to another.
-	PullRequestTimelineItemsItemTypeAddedToProjectEvent               PullRequestTimelineItemsItemType = "ADDED_TO_PROJECT_EVENT"               // Represents a 'added_to_project' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeAssignedEvent                     PullRequestTimelineItemsItemType = "ASSIGNED_EVENT"                       // Represents an 'assigned' event on any assignable object.
-	PullRequestTimelineItemsItemTypeClosedEvent                       PullRequestTimelineItemsItemType = "CLOSED_EVENT"                         // Represents a 'closed' event on any `Closable`.
-	PullRequestTimelineItemsItemTypeCommentDeletedEvent               PullRequestTimelineItemsItemType = "COMMENT_DELETED_EVENT"                // Represents a 'comment_deleted' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeConnectedEvent                    PullRequestTimelineItemsItemType = "CONNECTED_EVENT"                      // Represents a 'connected' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeConvertedNoteToIssueEvent         PullRequestTimelineItemsItemType = "CONVERTED_NOTE_TO_ISSUE_EVENT"        // Represents a 'converted_note_to_issue' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeDemilestonedEvent                 PullRequestTimelineItemsItemType = "DEMILESTONED_EVENT"                   // Represents a 'demilestoned' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeDisconnectedEvent                 PullRequestTimelineItemsItemType = "DISCONNECTED_EVENT"                   // Represents a 'disconnected' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeLabeledEvent                      PullRequestTimelineItemsItemType = "LABELED_EVENT"                        // Represents a 'labeled' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeLockedEvent                       PullRequestTimelineItemsItemType = "LOCKED_EVENT"                         // Represents a 'locked' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeMarkedAsDuplicateEvent            PullRequestTimelineItemsItemType = "MARKED_AS_DUPLICATE_EVENT"            // Represents a 'marked_as_duplicate' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeMentionedEvent                    PullRequestTimelineItemsItemType = "MENTIONED_EVENT"                      // Represents a 'mentioned' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeMilestonedEvent                   PullRequestTimelineItemsItemType = "MILESTONED_EVENT"                     // Represents a 'milestoned' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeMovedColumnsInProjectEvent        PullRequestTimelineItemsItemType = "MOVED_COLUMNS_IN_PROJECT_EVENT"       // Represents a 'moved_columns_in_project' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypePinnedEvent                       PullRequestTimelineItemsItemType = "PINNED_EVENT"                         // Represents a 'pinned' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeReferencedEvent                   PullRequestTimelineItemsItemType = "REFERENCED_EVENT"                     // Represents a 'referenced' event on a given `ReferencedSubject`.
-	PullRequestTimelineItemsItemTypeRemovedFromProjectEvent           PullRequestTimelineItemsItemType = "REMOVED_FROM_PROJECT_EVENT"           // Represents a 'removed_from_project' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeRenamedTitleEvent                 PullRequestTimelineItemsItemType = "RENAMED_TITLE_EVENT"                  // Represents a 'renamed' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeReopenedEvent                     PullRequestTimelineItemsItemType = "REOPENED_EVENT"                       // Represents a 'reopened' event on any `Closable`.
-	PullRequestTimelineItemsItemTypeSubscribedEvent                   PullRequestTimelineItemsItemType = "SUBSCRIBED_EVENT"                     // Represents a 'subscribed' event on a given `Subscribable`.
-	PullRequestTimelineItemsItemTypeTransferredEvent                  PullRequestTimelineItemsItemType = "TRANSFERRED_EVENT"                    // Represents a 'transferred' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeUnassignedEvent                   PullRequestTimelineItemsItemType = "UNASSIGNED_EVENT"                     // Represents an 'unassigned' event on any assignable object.
-	PullRequestTimelineItemsItemTypeUnlabeledEvent                    PullRequestTimelineItemsItemType = "UNLABELED_EVENT"                      // Represents an 'unlabeled' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeUnlockedEvent                     PullRequestTimelineItemsItemType = "UNLOCKED_EVENT"                       // Represents an 'unlocked' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeUserBlockedEvent                  PullRequestTimelineItemsItemType = "USER_BLOCKED_EVENT"                   // Represents a 'user_blocked' event on a given user.
-	PullRequestTimelineItemsItemTypeUnmarkedAsDuplicateEvent          PullRequestTimelineItemsItemType = "UNMARKED_AS_DUPLICATE_EVENT"          // Represents an 'unmarked_as_duplicate' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeUnpinnedEvent                     PullRequestTimelineItemsItemType = "UNPINNED_EVENT"                       // Represents an 'unpinned' event on a given issue or pull request.
-	PullRequestTimelineItemsItemTypeUnsubscribedEvent                 PullRequestTimelineItemsItemType = "UNSUBSCRIBED_EVENT"                   // Represents an 'unsubscribed' event on a given `Subscribable`.
+	PullRequestTimelineItemsItemTypePullRequestCommit                 PullRequestTimelineItemsItemType = "PULL_REQUEST_COMMIT"                   // Represents a Git commit part of a pull request.
+	PullRequestTimelineItemsItemTypePullRequestCommitCommentThread    PullRequestTimelineItemsItemType = "PULL_REQUEST_COMMIT_COMMENT_THREAD"    // Represents a commit comment thread part of a pull request.
+	PullRequestTimelineItemsItemTypePullRequestReview                 PullRequestTimelineItemsItemType = "PULL_REQUEST_REVIEW"                   // A review object for a given pull request.
+	PullRequestTimelineItemsItemTypePullRequestReviewThread           PullRequestTimelineItemsItemType = "PULL_REQUEST_REVIEW_THREAD"            // A threaded list of comments for a given pull request.
+	PullRequestTimelineItemsItemTypePullRequestRevisionMarker         PullRequestTimelineItemsItemType = "PULL_REQUEST_REVISION_MARKER"          // Represents the latest point in the pull request timeline for which the viewer has seen the pull request's commits.
+	PullRequestTimelineItemsItemTypeAutomaticBaseChangeFailedEvent    PullRequestTimelineItemsItemType = "AUTOMATIC_BASE_CHANGE_FAILED_EVENT"    // Represents a 'automatic_base_change_failed' event on a given pull request.
+	PullRequestTimelineItemsItemTypeAutomaticBaseChangeSucceededEvent PullRequestTimelineItemsItemType = "AUTOMATIC_BASE_CHANGE_SUCCEEDED_EVENT" // Represents a 'automatic_base_change_succeeded' event on a given pull request.
+	PullRequestTimelineItemsItemTypeBaseRefChangedEvent               PullRequestTimelineItemsItemType = "BASE_REF_CHANGED_EVENT"                // Represents a 'base_ref_changed' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeBaseRefForcePushedEvent           PullRequestTimelineItemsItemType = "BASE_REF_FORCE_PUSHED_EVENT"           // Represents a 'base_ref_force_pushed' event on a given pull request.
+	PullRequestTimelineItemsItemTypeDeployedEvent                     PullRequestTimelineItemsItemType = "DEPLOYED_EVENT"                        // Represents a 'deployed' event on a given pull request.
+	PullRequestTimelineItemsItemTypeDeploymentEnvironmentChangedEvent PullRequestTimelineItemsItemType = "DEPLOYMENT_ENVIRONMENT_CHANGED_EVENT"  // Represents a 'deployment_environment_changed' event on a given pull request.
+	PullRequestTimelineItemsItemTypeHeadRefDeletedEvent               PullRequestTimelineItemsItemType = "HEAD_REF_DELETED_EVENT"                // Represents a 'head_ref_deleted' event on a given pull request.
+	PullRequestTimelineItemsItemTypeHeadRefForcePushedEvent           PullRequestTimelineItemsItemType = "HEAD_REF_FORCE_PUSHED_EVENT"           // Represents a 'head_ref_force_pushed' event on a given pull request.
+	PullRequestTimelineItemsItemTypeHeadRefRestoredEvent              PullRequestTimelineItemsItemType = "HEAD_REF_RESTORED_EVENT"               // Represents a 'head_ref_restored' event on a given pull request.
+	PullRequestTimelineItemsItemTypeMergedEvent                       PullRequestTimelineItemsItemType = "MERGED_EVENT"                          // Represents a 'merged' event on a given pull request.
+	PullRequestTimelineItemsItemTypeReviewDismissedEvent              PullRequestTimelineItemsItemType = "REVIEW_DISMISSED_EVENT"                // Represents a 'review_dismissed' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeReviewRequestedEvent              PullRequestTimelineItemsItemType = "REVIEW_REQUESTED_EVENT"                // Represents an 'review_requested' event on a given pull request.
+	PullRequestTimelineItemsItemTypeReviewRequestRemovedEvent         PullRequestTimelineItemsItemType = "REVIEW_REQUEST_REMOVED_EVENT"          // Represents an 'review_request_removed' event on a given pull request.
+	PullRequestTimelineItemsItemTypeReadyForReviewEvent               PullRequestTimelineItemsItemType = "READY_FOR_REVIEW_EVENT"                // Represents a 'ready_for_review' event on a given pull request.
+	PullRequestTimelineItemsItemTypeConvertToDraftEvent               PullRequestTimelineItemsItemType = "CONVERT_TO_DRAFT_EVENT"                // Represents a 'convert_to_draft' event on a given pull request.
+	PullRequestTimelineItemsItemTypeIssueComment                      PullRequestTimelineItemsItemType = "ISSUE_COMMENT"                         // Represents a comment on an Issue.
+	PullRequestTimelineItemsItemTypeCrossReferencedEvent              PullRequestTimelineItemsItemType = "CROSS_REFERENCED_EVENT"                // Represents a mention made by one issue or pull request to another.
+	PullRequestTimelineItemsItemTypeAddedToProjectEvent               PullRequestTimelineItemsItemType = "ADDED_TO_PROJECT_EVENT"                // Represents a 'added_to_project' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeAssignedEvent                     PullRequestTimelineItemsItemType = "ASSIGNED_EVENT"                        // Represents an 'assigned' event on any assignable object.
+	PullRequestTimelineItemsItemTypeClosedEvent                       PullRequestTimelineItemsItemType = "CLOSED_EVENT"                          // Represents a 'closed' event on any `Closable`.
+	PullRequestTimelineItemsItemTypeCommentDeletedEvent               PullRequestTimelineItemsItemType = "COMMENT_DELETED_EVENT"                 // Represents a 'comment_deleted' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeConnectedEvent                    PullRequestTimelineItemsItemType = "CONNECTED_EVENT"                       // Represents a 'connected' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeConvertedNoteToIssueEvent         PullRequestTimelineItemsItemType = "CONVERTED_NOTE_TO_ISSUE_EVENT"         // Represents a 'converted_note_to_issue' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeDemilestonedEvent                 PullRequestTimelineItemsItemType = "DEMILESTONED_EVENT"                    // Represents a 'demilestoned' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeDisconnectedEvent                 PullRequestTimelineItemsItemType = "DISCONNECTED_EVENT"                    // Represents a 'disconnected' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeLabeledEvent                      PullRequestTimelineItemsItemType = "LABELED_EVENT"                         // Represents a 'labeled' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeLockedEvent                       PullRequestTimelineItemsItemType = "LOCKED_EVENT"                          // Represents a 'locked' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeMarkedAsDuplicateEvent            PullRequestTimelineItemsItemType = "MARKED_AS_DUPLICATE_EVENT"             // Represents a 'marked_as_duplicate' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeMentionedEvent                    PullRequestTimelineItemsItemType = "MENTIONED_EVENT"                       // Represents a 'mentioned' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeMilestonedEvent                   PullRequestTimelineItemsItemType = "MILESTONED_EVENT"                      // Represents a 'milestoned' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeMovedColumnsInProjectEvent        PullRequestTimelineItemsItemType = "MOVED_COLUMNS_IN_PROJECT_EVENT"        // Represents a 'moved_columns_in_project' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypePinnedEvent                       PullRequestTimelineItemsItemType = "PINNED_EVENT"                          // Represents a 'pinned' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeReferencedEvent                   PullRequestTimelineItemsItemType = "REFERENCED_EVENT"                      // Represents a 'referenced' event on a given `ReferencedSubject`.
+	PullRequestTimelineItemsItemTypeRemovedFromProjectEvent           PullRequestTimelineItemsItemType = "REMOVED_FROM_PROJECT_EVENT"            // Represents a 'removed_from_project' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeRenamedTitleEvent                 PullRequestTimelineItemsItemType = "RENAMED_TITLE_EVENT"                   // Represents a 'renamed' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeReopenedEvent                     PullRequestTimelineItemsItemType = "REOPENED_EVENT"                        // Represents a 'reopened' event on any `Closable`.
+	PullRequestTimelineItemsItemTypeSubscribedEvent                   PullRequestTimelineItemsItemType = "SUBSCRIBED_EVENT"                      // Represents a 'subscribed' event on a given `Subscribable`.
+	PullRequestTimelineItemsItemTypeTransferredEvent                  PullRequestTimelineItemsItemType = "TRANSFERRED_EVENT"                     // Represents a 'transferred' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeUnassignedEvent                   PullRequestTimelineItemsItemType = "UNASSIGNED_EVENT"                      // Represents an 'unassigned' event on any assignable object.
+	PullRequestTimelineItemsItemTypeUnlabeledEvent                    PullRequestTimelineItemsItemType = "UNLABELED_EVENT"                       // Represents an 'unlabeled' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeUnlockedEvent                     PullRequestTimelineItemsItemType = "UNLOCKED_EVENT"                        // Represents an 'unlocked' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeUserBlockedEvent                  PullRequestTimelineItemsItemType = "USER_BLOCKED_EVENT"                    // Represents a 'user_blocked' event on a given user.
+	PullRequestTimelineItemsItemTypeUnmarkedAsDuplicateEvent          PullRequestTimelineItemsItemType = "UNMARKED_AS_DUPLICATE_EVENT"           // Represents an 'unmarked_as_duplicate' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeUnpinnedEvent                     PullRequestTimelineItemsItemType = "UNPINNED_EVENT"                        // Represents an 'unpinned' event on a given issue or pull request.
+	PullRequestTimelineItemsItemTypeUnsubscribedEvent                 PullRequestTimelineItemsItemType = "UNSUBSCRIBED_EVENT"                    // Represents an 'unsubscribed' event on a given `Subscribable`.
 )
 
 // PullRequestUpdateState represents the possible target states when updating a pull request.
@@ -966,33 +993,6 @@ type RefOrderField string
 const (
 	RefOrderFieldTagCommitDate RefOrderField = "TAG_COMMIT_DATE" // Order refs by underlying commit date if the ref prefix is refs/tags/.
 	RefOrderFieldAlphabetical  RefOrderField = "ALPHABETICAL"    // Order refs by their alphanumeric name.
-)
-
-// RegistryPackageDependencyType represents the possible types of a registry package dependency.
-type RegistryPackageDependencyType string
-
-// The possible types of a registry package dependency.
-const (
-	RegistryPackageDependencyTypeDefault  RegistryPackageDependencyType = "DEFAULT"  // A default registry package dependency type.
-	RegistryPackageDependencyTypeDev      RegistryPackageDependencyType = "DEV"      // A dev registry package dependency type.
-	RegistryPackageDependencyTypeTest     RegistryPackageDependencyType = "TEST"     // A test registry package dependency type.
-	RegistryPackageDependencyTypePeer     RegistryPackageDependencyType = "PEER"     // A peer registry package dependency type.
-	RegistryPackageDependencyTypeOptional RegistryPackageDependencyType = "OPTIONAL" // An optional registry package dependency type.
-	RegistryPackageDependencyTypeBundled  RegistryPackageDependencyType = "BUNDLED"  // An optional registry package dependency type.
-)
-
-// RegistryPackageType represents the possible types of a registry package.
-type RegistryPackageType string
-
-// The possible types of a registry package.
-const (
-	RegistryPackageTypeNpm      RegistryPackageType = "NPM"      // An npm registry package.
-	RegistryPackageTypeRubygems RegistryPackageType = "RUBYGEMS" // A rubygems registry package.
-	RegistryPackageTypeMaven    RegistryPackageType = "MAVEN"    // A maven registry package.
-	RegistryPackageTypeDocker   RegistryPackageType = "DOCKER"   // A docker image.
-	RegistryPackageTypeDebian   RegistryPackageType = "DEBIAN"   // A debian package.
-	RegistryPackageTypeNuget    RegistryPackageType = "NUGET"    // A nuget package.
-	RegistryPackageTypePython   RegistryPackageType = "PYTHON"   // A python package.
 )
 
 // ReleaseOrderField represents properties by which release connections can be ordered.
@@ -1172,6 +1172,16 @@ const (
 	RepositoryVisibilityInternal RepositoryVisibility = "INTERNAL" // The repository is visible only to users in the same business.
 )
 
+// RequestableCheckStatusState represents the possible states that can be requested when creating a check run.
+type RequestableCheckStatusState string
+
+// The possible states that can be requested when creating a check run.
+const (
+	RequestableCheckStatusStateQueued     RequestableCheckStatusState = "QUEUED"      // The check suite or run has been queued.
+	RequestableCheckStatusStateInProgress RequestableCheckStatusState = "IN_PROGRESS" // The check suite or run is in progress.
+	RequestableCheckStatusStateCompleted  RequestableCheckStatusState = "COMPLETED"   // The check suite or run has been completed.
+)
+
 // SamlDigestAlgorithm represents the possible digest algorithms used to sign SAML requests for an identity provider.
 type SamlDigestAlgorithm string
 
@@ -1200,16 +1210,6 @@ type SavedReplyOrderField string
 // Properties by which saved reply connections can be ordered.
 const (
 	SavedReplyOrderFieldUpdatedAt SavedReplyOrderField = "UPDATED_AT" // Order saved reply by when they were updated.
-)
-
-// RequestableCheckStatusState represents the possible states that can be requested when creating a check run.
-type RequestableCheckStatusState string
-
-// The possible states that can be requested when creating a check run.
-const (
-	RequestableCheckStatusStateQueued     RequestableCheckStatusState = "QUEUED"      // The check suite or run has been queued.
-	RequestableCheckStatusStateInProgress RequestableCheckStatusState = "IN_PROGRESS" // The check suite or run is in progress.
-	RequestableCheckStatusStateCompleted  RequestableCheckStatusState = "COMPLETED"   // The check suite or run has been completed.
 )
 
 // SearchType represents represents the individual results of a search.

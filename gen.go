@@ -23,22 +23,22 @@ import (
 // schemaPreviews is a list of features that are available during the GitHub API Preview Period
 // Check https://developer.github.com/changes/ for updates
 var schemaPreviews = []string{
-	"audit-log",
-	"flash",
-	"shadow-cat",
 	"antiope",
-	"echo",
-	"hagar",
-	"merge-info",
-	"hawkgirl",
-	"vixen",
-	"daredevil",
-	"starfox",
-	"queen-beryl",
-	"corsair",
-	"elektra",
+	"audit-log",
 	"bane",
+	"corsair",
+	"daredevil",
+	"echo",
+	"elektra",
+	"flash",
+	"hagar",
+	"hawkgirl",
+	"merge-info",
+	"queen-beryl",
+	"shadow-cat",
 	"slothette",
+	"starfox",
+	"vixen",
 }
 
 func parseArgs(previewMode *bool) {
